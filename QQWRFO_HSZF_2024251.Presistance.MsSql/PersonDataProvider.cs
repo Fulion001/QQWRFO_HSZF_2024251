@@ -11,12 +11,12 @@ namespace QQWRFO_HSZF_2024251.Presistance.MsSql
     {
         Person GetPersonByNeptun(string neptun);
         List<Person> GetAllPeople();
-    }
-    public interface IPersonAdd
-    {
         void Add(Person person);
+        void Modify(Person person);
     }
-    public class PersonDataProvider : IPersonDataProvider, IPersonAdd
+    
+
+    public class PersonDataProvider : IPersonDataProvider
     {
         //Connection
         private readonly AppDbContext context;
@@ -28,17 +28,12 @@ namespace QQWRFO_HSZF_2024251.Presistance.MsSql
         //implement IPersonDataProvider interface
         public List<Person> GetAllPeople()
         {
-            List<Person> list = new List<Person>();
-            foreach (var item in context.People)
-            {
-                list.Add(item);
-            }
-            return list;
+            return context.People.ToList();
         }
 
         public Person GetPersonByNeptun(string neptun)
         {
-            throw new NotImplementedException();
+            return context.People.Where(x => x.NeptunID == neptun).First();
         }
 
         public void Add(Person person)
@@ -53,6 +48,29 @@ namespace QQWRFO_HSZF_2024251.Presistance.MsSql
 
                 throw;
             }
+        }
+
+        public void Modify(Person person)
+        {
+            var modifyperson=context.People.Where(x=>x.NeptunID==person.NeptunID).First();
+            if (modifyperson!=null)
+            {
+                modifyperson.Name = person.Name;
+                modifyperson.Student = person.Student;
+                modifyperson.Age = person.Age;
+                modifyperson.OrderStatus = person.OrderStatus;
+                modifyperson.SpecialRequest = person.SpecialRequest;
+            }
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                
+            }
+            
         }
     }
 }

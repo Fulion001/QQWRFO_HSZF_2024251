@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QQWRFO_HSZF_2024251.Model
 {
-    public class Transaction
+    public class PitcherTransaction
     {
         [Key]
         [Required]
@@ -22,8 +23,13 @@ namespace QQWRFO_HSZF_2024251.Model
         [Required]
         public virtual DateTime PaymentTime     { get; set; }
 
-        [JsonIgnore]
+
         [Required]
-        public virtual Person? ThatPerson  { get; set; }
+        public virtual string NeptunID { get; set; }
+
+        [ForeignKey(nameof(NeptunID))]
+        public virtual Person Person { get; set; }
+
+        
     }
 }

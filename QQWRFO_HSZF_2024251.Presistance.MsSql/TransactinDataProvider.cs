@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QQWRFO_HSZF_2024251.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,10 @@ namespace QQWRFO_HSZF_2024251.Presistance.MsSql
 {
     public interface ITransactinDataProvider
     {
-        List<Transaction> GetTransactionsByNeptunId(string neptunid);
-        List<Transaction> GetTransactions();
+        List<PitcherTransaction> GetTransactions();
+        bool CreateTrasaction(string ID, string neptun, int amount, DateTime paymentTime);
     }
+    
 
     //main Transactin Data Provider class
     public class TransactinDataProvider : ITransactinDataProvider
@@ -23,15 +25,37 @@ namespace QQWRFO_HSZF_2024251.Presistance.MsSql
             context = dbContext;
         }
 
-        //implement ITransactinDataProvider interface
-        public List<Transaction> GetTransactions()
+
+        //implement ITrasactionCreate interface
+        public bool CreateTrasaction(string ID, string neptun, int amount, DateTime paymentTime)
         {
-            throw new NotImplementedException();
+
+            var newTransaction = new PitcherTransaction
+            {
+                TransactionId = ID,
+                Amount = amount,
+                PaymentTime = paymentTime,
+                NeptunID = neptun
+            };
+
+            try
+            {
+                context.Transactions.Add(newTransaction);
+                context.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public List<Transaction> GetTransactionsByNeptunId(string neptunid)
+        //implement ITransactinDataProvider interface
+        public List<PitcherTransaction> GetTransactions()
         {
-            throw new NotImplementedException();
+            return context.Transactions.ToList();
         }
+
+
     }
 }
